@@ -3,4 +3,6 @@ import init from "./server/main";
 
 dotenv.config();
 
-init();
+const PORT = Number(process.env.PORT) || 3000;
+
+init(PORT);

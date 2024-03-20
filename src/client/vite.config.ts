@@ -6,6 +6,7 @@ export default defineConfig({
 	plugins: [vue()],
 	build: {
 		outDir: "../views",
+		emptyOutDir: true,
+		sourcemap: true,
 	},
-	root: "./src/client",
 });
