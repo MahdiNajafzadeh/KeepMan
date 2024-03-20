@@ -1,9 +1,13 @@
-import type { Request, Response, NextFunction } from "express";
 import express from "express";
 import cors from "cors";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+import routes from './routes';
+const PORT = process.env.PORT || 3000;
 
-export default app;
+export default () => {
+	const app = express();
+	app.use(cors());
+	app.use(express.json());
+    app.use(routes)
+	return app.listen(PORT, () => console.log(`SERVER LISTEN IN ${PORT}`));
+};
