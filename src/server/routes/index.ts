@@ -1,13 +1,13 @@
 import { Router } from "express";
-import auth from "./api/auth.route.ts";
-import user from "./api/user.route.ts";
-import note from "./api/note.route.ts";
-import friend from "./api/friend.route.ts";
+import authRoutes from "./api/auth.route.ts";
+import userRoutes from "./api/user.route.ts";
+import noteRoutes from "./api/note.route.ts";
+import friendRoutes from "./api/friend.route.ts";
 
 const router = Router();
-router.use("/api", auth);
-router.use("/api", user);
-router.use("/api", note);
-router.use("/api", friend);
+router.use("/api", authRoutes);
+router.use("/api", userRoutes);
+router.use("/api", noteRoutes);
+router.use("/api", friendRoutes);
 
 export default router;
