@@ -13,13 +13,27 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/vue-fontawesome": "^3.0.6",
+    "@types/axios": "^0.14.0",
+    "@types/js-cookie": "^3.0.6",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "jquery": "^3.7.1",
+    "js-cookie": "^3.0.5",
+    "proper": "^0.5.0",
+    "v-tooltip": "^2.1.3",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",
     "@tsconfig/node20": "^20.1.2",
     "@types/node": "^20.11.28",
+    "@types/vue": "^2.0.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "@vue/eslint-config-prettier": "^8.0.0",
