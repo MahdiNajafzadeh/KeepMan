@@ -1,0 +1,1 @@
+import{h as t,_ as o,o as s,c as r,t as a}from"./index-Bq6j-5US.js";const n=t({setup(){}}),c={class:"text-white"};function i(e,p,_,u,d,f){return s(),r("div",c," Note ID is "+a(e.$router.currentRoute.value.params.id),1)}const m=o(n,[["render",i]]);export{m as default};

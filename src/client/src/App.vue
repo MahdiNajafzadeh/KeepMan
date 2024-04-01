@@ -1,19 +1,18 @@
-<script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router'
-import NavBar from './components/NavBar.vue';
-import { onBeforeMount, ref } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { RouterView } from 'vue-router'
+import NavaBar from './components/NavBar.vue'
 
-const showNavBar = ref(true);
-
-onBeforeMount(() => {
-  const route = useRoute();
-  showNavBar.value = route.meta.showNavBar as boolean;
-});
-
+export default defineComponent({
+  components: {
+    RouterView,
+    NavaBar,
+  }
+})
 </script>
 
 <template>
-  <NavBar v-if="showNavBar" />
+  <NavaBar />
   <RouterView />
 </template>
 

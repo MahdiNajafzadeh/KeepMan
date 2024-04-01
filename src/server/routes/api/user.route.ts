@@ -1,10 +1,12 @@
 import { Router } from "express";
-import auth from "../../controller/auth.controller.ts";
+import user from "../../controller/user.controller";
+import auth from "../../middleware/auth.middleware";
+import schema from "../../schema/user.schema";
+import { validator } from "../../middleware/schema.middleware";
 
 const router = Router();
 
-router.post("/auth/signup", auth.signup);
-router.post("/auth/login");
-router.delete("/auth/logout");
+router.get("/user", [auth.have.token], user.get);
+router.put("/user", [auth.have.token , validator(schema.update) ], user.update);
 
 export default router;

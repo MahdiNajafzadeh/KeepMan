@@ -13,7 +13,13 @@ export const login = joi.object({
 	password: joi.string().min(8).required(),
 });
 
+export const changePassword = joi.object({
+	password: joi.string().min(8).required(),
+	newPassword: joi.string().min(8).required(),
+});
+
 export default {
 	signup,
 	login,
+	changePassword
 };

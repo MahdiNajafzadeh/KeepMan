@@ -23,5 +23,10 @@ router.post(
 	auth.controller.login
 );
 router.delete("/auth/logout", [auth.middleware.have.token], auth.controller.logout);
+router.post(
+	"/auth/change-password",
+	[auth.middleware.have.token, validator(auth.schema.changePassword)],
+	auth.controller.changePassword
+);
 
 export default router;

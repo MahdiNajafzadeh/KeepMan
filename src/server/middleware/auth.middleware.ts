@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import libToken from "../lib/token";
+import token from "../lib/token";
 
-function validate_token(req: Request, res: Response, next: NextFunction) {
-	if (!req.cookies || !req.cookies?.token || !libToken.validate(req.cookies?.token)) {
+function have_token(req: Request, res: Response, next: NextFunction) {
+	if (!req.cookies || !req.cookies?.token || !token.validate(req.cookies?.token)) {
 		if (req.baseUrl.startsWith("/api")) {
 			return res.status(401).json({
 				status: false,
@@ -13,12 +13,14 @@ function validate_token(req: Request, res: Response, next: NextFunction) {
 			res.redirect("/auth");
 		}
 	} else {
+		const session = token.decrypt(req.cookies?.token);
+		res.locals.session = session;
 		next();
 	}
 }
 
-function not_token(req: Request, res: Response, next: NextFunction) {
-	if (!req.cookies || !req.cookies?.token || !libToken.validate(req.cookies?.token)) {
+function not_have_token(req: Request, res: Response, next: NextFunction) {
+	if (!req.cookies || !req.cookies?.token || !token.validate(req.cookies?.token)) {
 		next();
 	} else {
 		if (req.baseUrl.startsWith("/api")) {
@@ -35,11 +37,11 @@ function not_token(req: Request, res: Response, next: NextFunction) {
 
 export default {
 	have: {
-		token : validate_token
+		token: have_token,
 	},
-	not : {
-		have : {
-			token : not_token
-		}
-	}
+	not: {
+		have: {
+			token: not_have_token,
+		},
+	},
 };

@@ -1,200 +1,180 @@
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, ref, watch } from 'vue'
+import FloatLabel from 'primevue/floatlabel';
+import InputText from 'primevue/inputtext';
 
 export default defineComponent({
-    name: "ProfileView",
-    setup() {
-        const store = useStore();
-        const profile = computed(() => store.state.profile);
-        return {
-            profile,
-        }
-    },
-    data() {
-        return {
-            changedProfile: false,
-            iconNewPassword: ['fas', 'eye'],
-            iconConfirmPassword: ['fas', 'eye'],
-            allowChangePassword: false,
-        }
-    },
-    methods: {
-        changeProfileImage(event: Event) {
-            const changedProfileImage = this.changeProfile;
-            const inputElement = event.target as HTMLInputElement;
-            if (inputElement.files && inputElement.files.length > 0) {
-                const file = inputElement.files[0];
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const previewImage = document.getElementById('image-profile-perview') as HTMLImageElement
-                    if (previewImage) {
-                        previewImage.src = e.target?.result as string;
-                        changedProfileImage('image')
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        },
-        changeProfile(changedData: string, event?: Event) {
-            this.changedProfile = true
-            switch (changedData) {
-                case 'firstName':
-                case 'lastName':
-                case 'username': {
-                    const inputElement = event?.target as HTMLInputElement;
-                    this.profile[changedData] = inputElement.value;
-                    break;
-                }
-                case 'image':
-                    break;
-                default:
-                    break;
-            }
-        },
-        showPassword(passwordInputId: string) {
-            const passwordInput = document.getElementById(passwordInputId) as HTMLInputElement;
-            if (passwordInputId === 'newPassword') {
-                this.iconNewPassword = this.iconNewPassword.includes('eye') ? ['fas', 'eye-slash'] : ['fas', 'eye']
-            } else {
-                this.iconConfirmPassword = this.iconConfirmPassword.includes('eye') ? ['fas', 'eye-slash'] : ['fas', 'eye']
-            }
-            passwordInput.type = passwordInput.type === "password" ? "text" : "password"
-        },
-        validatePassword() {
-            const newPasswordValue = (document.getElementById('newPassword') as HTMLInputElement).value
-            const confirmPasswordValue = (document.getElementById('confirmPassword') as HTMLInputElement).value
-            if ((newPasswordValue.length < 8) || (newPasswordValue !== confirmPasswordValue)) {
-                console.log(false);
-            } else {
-                this.allowChangePassword = true
-            }
-        }
-    },
+  components: {
+    FloatLabel,
+    InputText,
+  },
+  setup() {
+    const userFirstName = ref('Mahdi');
+    const userLastName = ref('Najafzadeh');
+    const userUsername = ref('8ma8h3di3');
+    const userEmail = ref('8ma8h3di3@gmail.com');
+    const originalUserFirstName = ref(userFirstName.value);
+    const originalUserLastName = ref(userLastName.value);
+    const originalUserUsername = ref(userUsername.value);
+    const changedProfile = ref(false);
+    const password = ref('')
+    const newPassword = ref('')
+    const confirmPassword = ref('')
+    const enableNewPasswordInputs = ref(false)
+    const enableChangePasswordButton = ref(false)
+
+
+    const saveChanges = () => {
+      if (!changedProfile.value) return
+      // TODO: Complete this section after complete request lib
+      console.log('Profile Changed !');
+    };
+
+    const changePassword = () => {
+      if (!(enableNewPasswordInputs.value && enableChangePasswordButton.value)) return
+      // TODO: Complete this section after complete request lib
+      console.log('Password Changed !');
+    }
+
+    const checkChanges = () => {
+      changedProfile.value =
+        originalUserFirstName.value !== userFirstName.value ||
+        originalUserLastName.value !== userLastName.value ||
+        originalUserUsername.value !== userUsername.value;
+    };
+
+    const checkAllowToNewPassword = () => {
+      enableNewPasswordInputs.value = Boolean(password.value.length)
+    }
+
+    const checkAllowToResetPassword = () => {
+      enableChangePasswordButton.value = Boolean(enableNewPasswordInputs.value && (newPassword.value === confirmPassword.value))
+    }
+
+    // Watch Profile
+    watch(userFirstName, checkChanges)
+    watch(userLastName, checkChanges)
+    watch(userUsername, checkChanges)
+
+    // Watch Passwords
+    watch(password, checkAllowToNewPassword)
+    watch(newPassword, checkAllowToResetPassword)
+    watch(confirmPassword, checkAllowToResetPassword)
+
+    // setInterval(() => { console.log(changedProfile.value) }, 2000)
+
+    return {
+      userFirstName,
+      userLastName,
+      userUsername,
+      userEmail,
+      changedProfile,
+      password,
+      newPassword,
+      confirmPassword,
+      saveChanges,
+      enableNewPasswordInputs,
+      enableChangePasswordButton,
+      changePassword
+    };
+  }
 })
 </script>
 
-
 <template>
-    <main class="mx-3 p-4 d-flex flex-row justify-content-center">
-        <div class="profile-card">
-            <h1>Profile</h1>
-            <div class="container m-4">
-                <div class="row form-row">
-                    <div class="d-flex flex-row justify-content-center">
-                        <div style="position: relative;">
-                            <img class="rounded-circle" style="width: 150px; height: 150px;"
-                                :src="`/image/profile/${profile.id}.jpg`" id="image-profile-perview"
-                                alt="image-profile-perview">
-                            <label for="file-input" style="position: absolute; bottom: 0; right: 0;"
-                                class="btn btn-secondary">
-                                <FontAwesomeIcon :icon="['fas', 'circle-plus']" />
-                            </label>
-                            <input @change="changeProfileImage" id="file-input" type="file" style="display: none;">
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="firstNameInput" class="mb-1">First Name</label>
-                        <div class="input-group">
-                            <input id="firstNameInput" type="text" class="form-control" placeholder="First Name"
-                                aria-describedby="inputGroupPrepend2" :value="profile.firstName"
-                                @change="changeProfile('firstName', $event)" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="lastNameInput" class="mb-1">Last Name</label>
-                        <div class="input-group">
-                            <input id="lastNameInput" type="text" class="form-control" placeholder="Last Name"
-                                aria-describedby="inputGroupPrepend2" :value="profile.lastName"
-                                @change="changeProfile('lastName', $event)" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row from-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="usernameInput" class="mb-1">Username</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                            </div>
-                            <input id="usernameInput" type="text" class="form-control" placeholder="Username"
-                                aria-describedby="inputGroupPrepend2" :value="profile.username"
-                                @change="changeProfile('username', $event)" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="emailInput" class="mb-1">Email</label>
-                        <div class="input-group">
-                            <input id="emailInput" type="text" class="form-control" placeholder="Last Name"
-                                aria-describedby="inputGroupPrepend2" :value="profile.email" disabled required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row from-row">
-                    <div class="col-md-10 d-flex flex-row justify-content-end">
-                        <span v-if="changedProfile" class="btn btn-danger" style="align-content: center;">
-                            Need to Save Profile
-                        </span>
-                    </div>
-                    <div class="col-md-2 d-flex flex-row justify-content-end">
-                        <input class="btn btn-success"
-                            :class="{ 'btn-success': changedProfile, 'btn-outline-success': !changedProfile }"
-                            :disabled="!changedProfile" type="button" value="Save">
-                    </div>
-                </div>
-                <hr>
-                <div class="row from-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="newPassword" class="mb-1">New Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" placeholder="New Password" id="newPassword"
-                                @change="validatePassword" required>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text btn btn-secondary">
-                                    <FontAwesomeIcon @click="showPassword('newPassword')" :icon="iconNewPassword" />
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row from-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="confirmPassword" class="mb-1">Confirm New Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" placeholder="Confirm New Password"
-                                aria-describedby="inputGroupPrepend2" id="confirmPassword" @change="validatePassword"
-                                required>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text btn btn-secondary" id="inputGroupPrepend2">
-                                    <FontAwesomeIcon @click="showPassword('confirmPassword')"
-                                        :icon="iconConfirmPassword" />
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row from-row">
-                    <div class="col-md-10 d-flex flex-row justify-content-end">
-                    </div>
-                    <div class="col-md-2 d-flex flex-row justify-content-end">
-                        <input class="btn btn-success"
-                            :class="{ 'btn-success': allowChangePassword, 'btn-outline-success': !allowChangePassword }"
-                            :disabled="!allowChangePassword" type="button" value="Change Password">
-                    </div>
-                </div>
-            </div>
+  <main class="pt-6">
+    <div
+      class="md:mx-auto md:w-1/2 sm:w-full sm:m-0 p-6 border border-b rounded-md border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
+      <h1 class="text-4xl dark:text-white">
+        Profile
+      </h1>
+      <hr class="mb-8 mt-4">
+      <div class="grid grid-rows-5 gap-8">
+
+        <!-- First Name -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText size="large" v-model="userFirstName" type="text" id="first_name"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="first_name" class="text-lg dark:text-white mb-1">First Name</label>
+          </FloatLabel>
         </div>
-    </main>
+
+        <!-- Last Name -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText size="large" v-model="userLastName" type="text" id="last_name"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="last_name" class="text-lg dark:text-white mb-1">Last Name</label>
+          </FloatLabel>
+        </div>
+
+        <!-- Username -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText size="large" v-model="userUsername" type="text" id="username"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="username" class="text-lg dark:text-white mb-1">Username</label>
+          </FloatLabel>
+        </div>
+
+        <!-- Email (disable) -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText :disabled="true" size="large" v-model="userEmail" type="text" id="user_email"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="user_email" class="text-lg dark:text-white mb-1">Email</label>
+          </FloatLabel>
+        </div>
+
+        <!-- Save Button -->
+        <button @click="saveChanges" :class="{ 'cursor-not-allowed': !changedProfile }" :disabled="!changedProfile"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Save</button>
+      </div>
+      <hr class="my-8">
+      <div class="grid grid-rows-4 gap-8">
+
+        <!-- Password -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText size="large" v-model="password" type="password" id="password"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="password" class="text-lg dark:text-white mb-1">Password</label>
+          </FloatLabel>
+        </div>
+
+        <!-- New Password -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText :disabled="!enableNewPasswordInputs" size="large" v-model="newPassword" type="password"
+              id="new_password"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="new_password" class="text-lg dark:text-white mb-1">New Password</label>
+          </FloatLabel>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="flex flex-col">
+          <FloatLabel class="w-full">
+            <InputText :disabled="!enableNewPasswordInputs" size="large" v-model="confirmPassword" type="password"
+              id="confirm_password"
+              class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <label for="confirm_password" class="text-lg dark:text-white mb-1">Confirm Password</label>
+          </FloatLabel>
+        </div>
+
+        <!-- Change Password Button -->
+        <div class="flex flex-col">
+          <button :disabled="!enableChangePasswordButton" :class="{ 'cursor-not-allowed': !enableChangePasswordButton }"
+            @click="changePassword"
+            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+            Change Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
 </template>
 
-<style scoped>
-.profile-card {
-    width: calc(100% / 3)
-}
-</style>
+
+<style scoped></style>

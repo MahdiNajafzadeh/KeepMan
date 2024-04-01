@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import users from "../model/users.model";
 import token from "../lib/token";
+import type { JwtPayload } from "jsonwebtoken";
 
 interface SignupBody {
 	firstName: string;
@@ -28,6 +29,7 @@ async function signup(req: Request, res: Response, next: NextFunction) {
 		});
 	}
 	const userCreate = await users.create(body);
+	console.log(userCreate);
 	if (!userCreate.success) {
 		return res.status(500).json({
 			status: false,
@@ -42,16 +44,85 @@ async function signup(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
-function login(req: Request, res: Response, next: NextFunction) {
-	res.send("api/auth/login");
+async function login(req: Request, res: Response, next: NextFunction) {
+	const userAuth = await users.auth.validate.by.username(req.body);
+	if (!userAuth.success) {
+		return res.status(500).json({
+			status: false,
+			code: "INTERNAL_ERR",
+			message: "Server have some Problem",
+		});
+	}
+	if (!Boolean(userAuth.data)) {
+		return res.status(401).json({
+			status: false,
+			code: "AUTH_ERR",
+			message: "Authentication faild",
+		});
+	}
+	const userToken = token.encrypt({ id: userAuth.data?.id, username: userAuth.data?.username });
+	res.status(200).cookie("token", userToken).json({
+		status: true,
+		code: "SUCCESS",
+		message: "User login successfuly",
+	});
 }
 
-function logout(req: Request, res: Response, next: NextFunction) {
-	res.send("api/auth/logout");
+async function logout(req: Request, res: Response, next: NextFunction) {
+	res.status(200).cookie("token", "", { expires: new Date() }).json({
+		status: true,
+		code: "SUCCESS",
+		message: "User logout successfuly",
+	});
+}
+
+async function changePassword(req: Request, res: Response, next: NextFunction) {
+	const session = res.locals.session;
+
+	const userAuth = await users.auth.validate.by.id({
+		id: session.id,
+		password: req.body.password,
+	});
+
+	if (!userAuth.success) {
+		return res.status(500).json({
+			status: false,
+			code: "INTERNAL_ERR",
+			message: "Server has some problems",
+		});
+	}
+
+	if (!Boolean(userAuth.data)) {
+		return res.status(401).json({
+			status: false,
+			code: "AUTH_ERR",
+			message: "Authentication failed",
+		});
+	}
+
+	const userChangePassword = await users.auth.changePassword({
+		id: session.id,
+		password: req.body.newPassword,
+	});
+
+	if (!userChangePassword.success) {
+		return res.status(500).json({
+			status: false,
+			code: "INTERNAL_ERR",
+			message: "Server has some problems",
+		});
+	}
+
+	res.status(200).json({
+		status: true,
+		code: "SUCCESS",
+		message: "User Change Password successfully",
+	});
 }
 
 export default {
 	signup,
 	login,
 	logout,
+	changePassword,
 };

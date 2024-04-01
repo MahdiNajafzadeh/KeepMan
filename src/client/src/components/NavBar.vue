@@ -1,69 +1,67 @@
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
-import { RouterLink } from 'vue-router';
+import UserProfileDropdown from './NavBar/UserProfileDropdown.vue'
+import NavBrand from './NavBar/NavBrand.vue';
 
 export default defineComponent({
-	name: 'NavBar',
-	components: {
-		RouterLink
-	},
-	data() {
-		return {
-			brandIcon: '/favicon.ico',
-			brandName: 'Keepman',
-			searchContent: ""
-		}
-	},
-	methods: {
-		logout(v) {
-			console.log(v)
-		}
-	},
-	watch: {
-		searchContent(v) {
-			console.log(v);
-		}
-	}
+    components: {
+        UserProfileDropdown,
+        NavBrand
+    }
 })
 </script>
 
 <template>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<!-- Nav brand (icon + brand name) -->
-		<a class="navbar-brand mx-3" href="#">
-			<img :src="brandIcon" width="30" height="30" class="d-inline-block align-top" alt="">
-			{{ brandName }}
-		</a>
+    <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900"> -->
+    <nav class="border border-b border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
+        <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+            <!-- Nav-brand -->
+            <NavBrand />
+            <!-- Search-Bar -->
+            <!-- md >= -->
+            <div class="hidden md:block w-1/2">
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-300" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                        <span class="sr-only">Search icon</span>
+                    </div>
+                    <input type="text" id="search-navbar"
+                        class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Search...">
+                </div>
+            </div>
 
-		<!-- Search bar (text input) -->
-		<form class="form-inline my-2 my-lg-0 mx-auto search-form">
-			<input id="searchBarInput" class="form-control mr-sm-2" type="search" placeholder="Search"
-				aria-label="Search" v-model="searchContent">
-		</form>
+            <!-- User-Profile -->
+            <!-- md >= -->
+            <div class="hidden md:block">
+                <UserProfileDropdown />
+            </div>
 
-		<!-- Account bar (profile with dropdown) -->
-		<div class="dropdown mx-4">
-			<button style="justify-content: center; align-items: center;" class="btn btn-secondary dropdown-toggle"
-				type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
-				aria-expanded="false">
-				<img :src="brandIcon" width="30" height="30" class="d-inline-block align-top">
-				@{{ brandName }}&ThinSpace;
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<router-link class="dropdown-item" to="/profile">Profile</router-link>
-				<router-link class="dropdown-item" to="/friends">Friends</router-link>
-				<router-link class="dropdown-item" to="/">Notes</router-link>
-				<router-link class="dropdown-item" to="/about">About</router-link>
-				<div class="dropdown-divider"></div>
-				<div class="dropdown-item" @click="logout">Logout</div>
-			</div>
-		</div>
-	</nav>
+            <!-- Search-Bar & User-Profile -->
+            <!-- <= sm -->
+            <div class="block md:hidden">
+                <div class="flex flex-row items-center">
+                    <!-- Search-Bar -->
+                    <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search"
+                        aria-expanded="false"
+                        class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                        <span class="sr-only">Search</span>
+                    </button>
+                    <!-- User-Profile -->
+                    <UserProfileDropdown :username="false" />
+                </div>
+            </div>
+        </div>
+    </nav>
 </template>
 
-<style scoped>
-.search-form {
-	max-width: 75%;
-	width: 50%
-}
-</style>
+<style scoped></style>
