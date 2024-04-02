@@ -2,6 +2,7 @@
 import { defineComponent, ref, watch } from 'vue'
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
+// import { useProfileStore } from '../stores/Profile'
 
 export default defineComponent({
   components: {
@@ -9,6 +10,9 @@ export default defineComponent({
     InputText,
   },
   setup() {
+
+    // const profileStore = useProfileStore()
+
     const userFirstName = ref('Mahdi');
     const userLastName = ref('Najafzadeh');
     const userUsername = ref('8ma8h3di3');

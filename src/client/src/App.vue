@@ -7,12 +7,17 @@ export default defineComponent({
   components: {
     RouterView,
     NavaBar,
+  },
+  computed: {
+    showNavBar() {
+      return this.$route.meta.showNavBar
+    }
   }
 })
 </script>
 
 <template>
-  <NavaBar />
+  <NavaBar v-if="showNavBar" />
   <RouterView />
 </template>
 
