@@ -1,11 +1,17 @@
 <script>
+import { defineComponent } from 'vue';
+
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel'
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import FloatLabel from 'primevue/floatlabel';
+import Toast from 'primevue/toast';
 
-export default {
+import { useProfileStore } from '../stores/Profile';
+const profileStore = useProfileStore()
+
+export default defineComponent({
     name: 'AuthPage',
     components: {
         TabView,
@@ -14,37 +20,58 @@ export default {
         // eslint-disable-next-line vue/no-reserved-component-names
         Button,
         FloatLabel,
+        Toast
+    },
+    setup() {
     },
     data() {
         return {
             activeTab: 'Signup',
             signupForm: {
-                firstName: '',
-                lastName: '',
-                username: '',
-                email: '',
-                password: '',
-                confirmPassword: '',
+                firstName: 'test',
+                lastName: 'test',
+                username: 'test',
+                email: 'test@mail.com',
+                password: '123456789',
+                confirmPassword: '123456789',
             },
             loginForm: {
-                username: '',
-                password: '',
+                username: 'test',
+                password: '123456789',
             },
         };
     },
     methods: {
-        signup() {
-            console.log(this.signupForm);
+        async signup() {
+            if (this.signupForm.password !== this.signupForm.confirmPassword) {
+                return this.$toast.add({ severity: 'warn', summary: 'Passwords not match', detail: 'Check Password & Confirm Password is Matched', life: 3000 })
+            }
+            if (this.signupForm.password.length < 8) {
+                return this.$toast.add({ severity: 'warn', summary: 'Password length is week', detail: 'Password must be more than 8 character', life: 3000 })
+            }
+            const result = await profileStore.signup({
+                firstName: this.signupForm.firstName,
+                lastName: this.signupForm.lastName,
+                username: this.signupForm.username,
+                email: this.signupForm.email,
+                password: this.signupForm.password,
+            })
+            if (result.success) {
+                this.$toast.add({ severity: "success", summary: "Signup Successfully", detail: "Now login with username & password !" })
+            } else {
+                this.$toast.add({ severity: "error", summary: "Error in Signup", detail: result.error })
+            }
         },
         login() {
             console.log(this.loginForm);
         },
     },
-};
+})
 </script>
 
 
 <template>
+    <Toast />
     <div class="auth-container">
         <div class="auth-card">
             <div class="flex flex-row justify-center items-center p-4">
