@@ -2,21 +2,23 @@
 import { defineComponent, ref, watch } from 'vue'
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
-// import { useProfileStore } from '../stores/Profile'
+import { useProfileStore } from '../stores/Profile'
+import Toast from 'primevue/toast';
 
 export default defineComponent({
   components: {
     FloatLabel,
     InputText,
+    Toast,
   },
   setup() {
 
-    // const profileStore = useProfileStore()
+    const profileStore = useProfileStore()
 
-    const userFirstName = ref('Mahdi');
-    const userLastName = ref('Najafzadeh');
-    const userUsername = ref('8ma8h3di3');
-    const userEmail = ref('8ma8h3di3@gmail.com');
+    const userFirstName = ref(profileStore.profile.firstName);
+    const userLastName = ref(profileStore.profile.lastName);
+    const userUsername = ref(profileStore.profile.username);
+    const userEmail = ref(profileStore.profile.email);
     const originalUserFirstName = ref(userFirstName.value);
     const originalUserLastName = ref(userLastName.value);
     const originalUserUsername = ref(userUsername.value);
@@ -27,16 +29,11 @@ export default defineComponent({
     const enableNewPasswordInputs = ref(false)
     const enableChangePasswordButton = ref(false)
 
-
     const saveChanges = () => {
-      if (!changedProfile.value) return
-      // TODO: Complete this section after complete request lib
-      console.log('Profile Changed !');
+      
     };
 
     const changePassword = () => {
-      if (!(enableNewPasswordInputs.value && enableChangePasswordButton.value)) return
-      // TODO: Complete this section after complete request lib
       console.log('Password Changed !');
     }
 
@@ -65,8 +62,6 @@ export default defineComponent({
     watch(newPassword, checkAllowToResetPassword)
     watch(confirmPassword, checkAllowToResetPassword)
 
-    // setInterval(() => { console.log(changedProfile.value) }, 2000)
-
     return {
       userFirstName,
       userLastName,
@@ -86,6 +81,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <Toast />
   <main class="pt-6">
     <div
       class="md:mx-auto md:w-1/2 sm:w-full sm:m-0 p-6 border border-b rounded-md border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">

@@ -12,11 +12,12 @@ import Wind from "./presets/Wind";
 import App from "./App.vue";
 import router from "./router";
 
-const app = createApp(App);
+const piniaStore = createPinia();
 
-app.use(createPinia());
-app.use(ToastService);
+const app = createApp(App);
+app.use(piniaStore);
 app.use(router);
+app.use(ToastService);
 app.use(PrimeVue, {
 	unstyled: true,
 	pt: Wind

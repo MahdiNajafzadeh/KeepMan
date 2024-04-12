@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import users from "../model/users.model";
 import token from "../lib/token";
-import type { JwtPayload } from "jsonwebtoken";
 
 interface SignupBody {
 	firstName: string;
@@ -25,11 +24,12 @@ async function signup(req: Request, res: Response, next: NextFunction) {
 		return res.status(400).json({
 			status: false,
 			code: "BAD_REQUEST_ERR",
+			short : "USER_EXIST_WITH_EMAIL_OR_USERNAME",
 			message: "User with this email or username is already exist",
 		});
 	}
 	const userCreate = await users.create(body);
-	console.log(userCreate);
+	
 	if (!userCreate.success) {
 		return res.status(500).json({
 			status: false,
@@ -37,10 +37,15 @@ async function signup(req: Request, res: Response, next: NextFunction) {
 			message: "Server have some Problem",
 		});
 	}
-	res.status(200).json({
+
+	const userToken = token.encrypt({ id: userCreate.data?.id, username: userCreate.data?.username });
+	res.status(200).cookie("token", userToken).json({
 		status: true,
 		code: "SUCCESS",
 		message: "User signup successfuly",
+		data: {
+			token : userToken
+		}
 	});
 }
 
@@ -50,6 +55,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		return res.status(500).json({
 			status: false,
 			code: "INTERNAL_ERR",
+			short : "DB_VALIDATE_ERROR",
 			message: "Server have some Problem",
 		});
 	}
@@ -57,6 +63,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		return res.status(401).json({
 			status: false,
 			code: "AUTH_ERR",
+			short : "AUTH_FAILD",
 			message: "Authentication faild",
 		});
 	}
@@ -65,6 +72,9 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		status: true,
 		code: "SUCCESS",
 		message: "User login successfuly",
+		data: {
+			token : userToken
+		}
 	});
 }
 

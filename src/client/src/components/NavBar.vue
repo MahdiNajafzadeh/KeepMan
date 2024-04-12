@@ -1,9 +1,24 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import UserProfileDropdown from './NavBar/UserProfileDropdown.vue'
 import NavBrand from './NavBar/NavBrand.vue';
+import { useProfileStore } from '../stores/Profile';
 
 export default defineComponent({
+    setup() {
+        const profileStore = useProfileStore()
+        const username = ref('')
+        username.value = profileStore.profile.username
+        return {
+            username
+        }
+    },
+    props: {
+        showUsername: {
+            type: Boolean,
+            default: true
+        }
+    },
     components: {
         UserProfileDropdown,
         NavBrand
@@ -38,7 +53,7 @@ export default defineComponent({
             <!-- User-Profile -->
             <!-- md >= -->
             <div class="hidden md:block">
-                <UserProfileDropdown />
+                <UserProfileDropdown :username="username" />
             </div>
 
             <!-- Search-Bar & User-Profile -->
@@ -57,7 +72,7 @@ export default defineComponent({
                         <span class="sr-only">Search</span>
                     </button>
                     <!-- User-Profile -->
-                    <UserProfileDropdown :username="false" />
+                    <UserProfileDropdown :username="username" />
                 </div>
             </div>
         </div>

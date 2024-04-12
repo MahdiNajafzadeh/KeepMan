@@ -13,13 +13,13 @@ export default defineComponent({
     },
     props: {
         username: {
-            type: Boolean,
-            default: true
+            type: String,
         }
     },
     methods: {
         logout() {
-            console.log('logout');
+            localStorage.clear()
+            this.$router.push({ name: 'auth' })
         }
     }
 })
@@ -33,7 +33,7 @@ export default defineComponent({
                     <FwbButton color="alternative">
                         <div class="flex flex-row items-center justify-between">
                             <img src="/favicon.ico" class="h-8 pr-1" alt="user-img-profile">
-                            <span v-if="username" class="text-black dark:text-white"> Username </span>
+                            <span v-if="username" class="text-black dark:text-white">{{ username }}</span>
                         </div>
                     </FwbButton>
                 </template>
