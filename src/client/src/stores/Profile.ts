@@ -33,8 +33,6 @@ export const useProfileStore = defineStore("Profile", {
 			email: ""
 		},
 		token: "",
-		loaded: false,
-		loading: false
 	}),
 	getters: {
 		getProfile(state) {
@@ -52,7 +50,6 @@ export const useProfileStore = defineStore("Profile", {
 				this.token = data?.token ? data?.token : "";
 				localStorage.setItem("token", this.token);
 				localStorage.setItem("tokenDate", new Date().getTime().toString());
-				document.cookie = `token=${this.token};`;
 				return { success: true, data: response.data };
 			} catch (error: any) {
 				if (error instanceof AxiosError) {
@@ -73,8 +70,10 @@ export const useProfileStore = defineStore("Profile", {
 				this.token = data?.token ? data?.token : "";
 				localStorage.setItem("token", this.token);
 				localStorage.setItem("tokenDate", new Date().getTime().toString());
-				document.cookie = `token=${this.token};`;
-				return { success: true, data: response.data };
+				const profileResponse = await request.get("http://localhost:3000/api/user");
+				const profileData = profileResponse.data?.data;
+				this.profile = profileData;
+				return { success: true, data };
 			} catch (error: any) {
 				if (error instanceof AxiosError) {
 					const data = error.response?.data;
@@ -92,7 +91,9 @@ export const useProfileStore = defineStore("Profile", {
 		async editProfile(newProfile: Profile) {
 			try {
 				const response = await request.put("http://localhost:3000/api/user", newProfile);
-				const
+				const data = response.data?.data;
+				this.profile = data;
+				return { success: true, data };
 			} catch (error) {
 				if (error instanceof AxiosError) {
 					const data = error.response?.data;

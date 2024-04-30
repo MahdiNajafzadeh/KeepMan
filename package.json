@@ -9,8 +9,9 @@
 		"dev": "cd src/client && bunx vite build && cd ../../ && bun --watch src/index.ts",
 		"client:build": "cd src/client && bunx vite build && cd ../../",
 		"client:build:watch": "cd src/client && bunx vite build --watch && cd ../../",
-		"db:studio": "bunx prisma studio --schema ./src/prisma/schema.prisma",
-		"db:push": "bunx prisma db push --schema ./src/prisma/schema.prisma"
+		"db:std": "bunx prisma studio --schema ./src/prisma/schema.prisma",
+		"db:push": "bunx prisma db push --schema ./src/prisma/schema.prisma",
+		"db:gen": "bunx prisma generate --schema ./src/prisma/schema.prisma"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
@@ -23,7 +24,7 @@
 		"typescript": "^5.0.0"
 	},
 	"dependencies": {
-		"@prisma/client": "^5.12.1",
+		"@prisma/client": "^5.13.0",
 		"@types/cookie-parser": "^1.4.7",
 		"@types/cors": "^2.8.17",
 		"@types/dotenv": "^8.2.0",
@@ -36,7 +37,7 @@
 		"express": "^4.18.3",
 		"joi": "^17.12.2",
 		"jsonwebtoken": "^9.0.2",
-		"prisma": "^5.11.0",
+		"prisma": "^5.13.0",
 		"vue": "^3.4.21"
 	}
 }

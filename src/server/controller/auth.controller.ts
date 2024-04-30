@@ -24,12 +24,12 @@ async function signup(req: Request, res: Response, next: NextFunction) {
 		return res.status(400).json({
 			status: false,
 			code: "BAD_REQUEST_ERR",
-			short : "USER_EXIST_WITH_EMAIL_OR_USERNAME",
+			short: "USER_EXIST_WITH_EMAIL_OR_USERNAME",
 			message: "User with this email or username is already exist",
 		});
 	}
+
 	const userCreate = await users.create(body);
-	
 	if (!userCreate.success) {
 		return res.status(500).json({
 			status: false,
@@ -38,14 +38,17 @@ async function signup(req: Request, res: Response, next: NextFunction) {
 		});
 	}
 
-	const userToken = token.encrypt({ id: userCreate.data?.id, username: userCreate.data?.username });
-	res.status(200).cookie("token", userToken).json({
+	const userToken = token.encrypt({
+		id: userCreate.data?.id,
+		username: userCreate.data?.username,
+	});
+	res.status(200).json({
 		status: true,
 		code: "SUCCESS",
 		message: "User signup successfuly",
 		data: {
-			token : userToken
-		}
+			token: userToken,
+		},
 	});
 }
 
@@ -55,7 +58,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		return res.status(500).json({
 			status: false,
 			code: "INTERNAL_ERR",
-			short : "DB_VALIDATE_ERROR",
+			short: "DB_VALIDATE_ERROR",
 			message: "Server have some Problem",
 		});
 	}
@@ -63,23 +66,23 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		return res.status(401).json({
 			status: false,
 			code: "AUTH_ERR",
-			short : "AUTH_FAILD",
+			short: "AUTH_FAILD",
 			message: "Authentication faild",
 		});
 	}
 	const userToken = token.encrypt({ id: userAuth.data?.id, username: userAuth.data?.username });
-	res.status(200).cookie("token", userToken).json({
+	res.status(200).json({
 		status: true,
 		code: "SUCCESS",
 		message: "User login successfuly",
 		data: {
-			token : userToken
-		}
+			token: userToken,
+		},
 	});
 }
 
 async function logout(req: Request, res: Response, next: NextFunction) {
-	res.status(200).cookie("token", "", { expires: new Date() }).json({
+	res.status(200).json({
 		status: true,
 		code: "SUCCESS",
 		message: "User logout successfuly",

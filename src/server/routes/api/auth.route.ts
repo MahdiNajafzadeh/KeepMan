@@ -14,12 +14,12 @@ const router = Router();
 
 router.post(
 	"/auth/signup",
-	[auth.middleware.not.have.token, validator(auth.schema.signup)],
+	[auth.middleware.already.have.token, validator(auth.schema.signup)],
 	auth.controller.signup
 );
 router.post(
 	"/auth/login",
-	[auth.middleware.not.have.token, validator(auth.schema.login)],
+	[auth.middleware.already.have.token, validator(auth.schema.login)],
 	auth.controller.login
 );
 router.delete("/auth/logout", [auth.middleware.have.token], auth.controller.logout);

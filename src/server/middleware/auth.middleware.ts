@@ -1,51 +1,60 @@
 import type { Request, Response, NextFunction } from "express";
 import token from "../lib/token";
 
+/*[ Helper Functions ]*/
+function sendUnAuthenResonse(res: Response) {
+	res.status(401).json({
+		status: false,
+		code: "AUTH_ERR",
+		message: "Authentication faild",
+	});
+}
+
+/*[ Main Functions ]*/
 function have_token(req: Request, res: Response, next: NextFunction) {
-	const cookieTokenValidation = token.validate(req.cookies?.token);
-	const headerTokenValidation = token.validate(req.header("X-Auth") as string);
-	if (cookieTokenValidation || headerTokenValidation) {
-		if (req.baseUrl.startsWith("/api")) {
-			return res.status(401).json({
-				status: false,
-				code: "AUTH_ERR",
-				message: "Authentication faild",
-			});
-		} else {
-			res.redirect("/auth");
-		}
-	} else {
-		console.log(cookieTokenValidation || headerTokenValidation);
-		let session;
-		if (cookieTokenValidation) {
-			session = token.decrypt(req.cookies?.token);
-		} else {
-			session = token.decrypt(req.header("X-Auth") as string);
-		}
-		res.locals.session = session;
-		next();
-	}
+	const header = req.header("Authorization") as string;
+	if (!header) return sendUnAuthenResonse(res);
+	const tokenHeader = header.split(" ")[1];
+	if (!tokenHeader) return sendUnAuthenResonse(res);
+	const validattion = token.validate(tokenHeader);
+	if (!validattion) return sendUnAuthenResonse(res);
+
+	const session = token.decrypt(tokenHeader);
+	res.locals.session = session;
+	next();
 }
 
 function not_have_token(req: Request, res: Response, next: NextFunction) {
-	const cookieTokenValidation = !token.validate(req.cookies?.token);
-	const headerTokenValidation = !token.validate(req.header("X-Auth") as string);
-	if (cookieTokenValidation && headerTokenValidation) {
-		next();
-	} else {
-		if (req.baseUrl.startsWith("/api")) {
-			return res.status(401).json({
-				status: false,
-				code: "AUTH_ERR",
-				message: "Authentication faild",
-			});
-		} else {
-			res.redirect("/");
-		}
-	}
+	const header = req.header("Authorization") as string;
+	if (!header) return next();
+	const tokenHeader = header.split(" ")[1];
+	if (!tokenHeader) return next();
+	const validattion = token.validate(tokenHeader);
+	if (!validattion) return next();
+
+	return sendUnAuthenResonse(res);
+}
+
+function already_have_token(req: Request, res: Response, next: NextFunction) {
+	const header = req.header("Authorization") as string;
+	if (!header) return next();
+	const tokenHeader = header.split(" ")[1];
+	if (!tokenHeader) return next();
+	const validattion = token.validate(tokenHeader);
+	if (!validattion) return next();
+
+	return res.status(201).json({
+		status: true,
+		message: "you are alreay login",
+	});
 }
 
 export default {
+	already: {
+		have: {
+			token: already_have_token,
+		},
+	},
 	have: {
 		token: have_token,
 	},
