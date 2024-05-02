@@ -9,6 +9,7 @@ function setupToken(config: AxiosRequestConfig): AxiosRequestConfig {
 	return config;
 }
 
+
 export default {
 	get: async (url: string, config: AxiosRequestConfig = {}) => {
 		config = setupToken(config);

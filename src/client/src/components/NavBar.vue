@@ -1,27 +1,29 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import UserProfileDropdown from './NavBar/UserProfileDropdown.vue'
 import NavBrand from './NavBar/NavBrand.vue';
 import { useProfileStore } from '../stores/Profile';
 
 export default defineComponent({
-    setup() {
-        const profileStore = useProfileStore()
-        const username = ref('')
-        username.value = profileStore.profile.username
-        return {
-            username
-        }
+    components: {
+        UserProfileDropdown,
+        NavBrand
     },
     props: {
         showUsername: {
             type: Boolean,
             default: true
-        }
+        },
+        showSearchBar: {
+            type: Boolean,
+            default: true
+        },
     },
-    components: {
-        UserProfileDropdown,
-        NavBrand
+    computed: {
+        username() {
+            const profileStore = useProfileStore()
+            return profileStore.profile.username
+        }
     }
 })
 </script>
@@ -34,7 +36,7 @@ export default defineComponent({
             <NavBrand />
             <!-- Search-Bar -->
             <!-- md >= -->
-            <div class="hidden md:block w-1/2">
+            <div class="hidden md:block w-1/2" v-if="showSearchBar">
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-300" aria-hidden="true"
@@ -61,8 +63,8 @@ export default defineComponent({
             <div class="block md:hidden">
                 <div class="flex flex-row items-center">
                     <!-- Search-Bar -->
-                    <button type="button" data-collapse-toggle="navbar-search" aria-controls="navbar-search"
-                        aria-expanded="false"
+                    <button v-if="showSearchBar" type="button" data-collapse-toggle="navbar-search"
+                        aria-controls="navbar-search" aria-expanded="false"
                         class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1">
                         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 20 20">

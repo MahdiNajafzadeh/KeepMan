@@ -36,8 +36,12 @@ export default defineComponent({
 </script>
 
 <template>
-    <main class="m-4">
-        <h1 class="text-4xl mb-4 dark:text-white text-black">Friends</h1>
+    <main class="m-6">
+        <div class="flex justify-between m-4 p-4" >
+            <h1 class="text-4xl dark:text-white text-black">
+                Friends
+            </h1>
+        </div>
         <hr class="mb-4">
         <div class="flex flex-row flex-wrap ">
             <div v-for="(friend, index) in friends" :key="index"

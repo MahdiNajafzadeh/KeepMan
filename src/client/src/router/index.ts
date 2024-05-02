@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import request from "@/lib/request.js";
 import { useProfileStore } from "@/stores/Profile.js";
+import request from "@/lib/request.js";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +42,15 @@ const router = createRouter({
 			}
 		},
 		{
+			path: "/note/edit/:id",
+			name: "note",
+			component: () => import("../views/EditNoteView.vue"),
+			meta: {
+				showNavBar: true,
+				showSearchBar: false
+			}
+		},
+		{
 			path: "/auth",
 			name: "auth",
 			component: () => import("../views/AuthView.vue"),
@@ -53,34 +62,38 @@ const router = createRouter({
 	]
 });
 
+const TWO_HOURS = 2 * 60 * 60 * 1000;
+
 router.beforeEach(async (to, from, next) => {
 	const token = localStorage.getItem("token");
 	const tokenDate = localStorage.getItem("tokenDate");
 	const profileStore = useProfileStore();
 
-	if (to.name !== "auth" && (!token?.length || !tokenDate?.length)) {
-		return next({ name: "auth" });
+	if (to.name !== "auth" && !token) {
+		next({ name: "auth" });
+		return;
 	}
 
 	if (to.name !== "auth" && token) {
-		const tokenTime = Number(tokenDate);
-		const nowTime = new Date().getTime();
-		const tokenLifeTime = (nowTime - tokenTime) / 1000 / 60 / 60;
-
-		if (tokenLifeTime >= 1) {
+		if (!tokenDate) {
+			next({ name: "auth" });
+			return;
+		}
+		const now = new Date().getTime();
+		if (now - parseInt(tokenDate) > TWO_HOURS) {
+			localStorage.clear();
+			profileStore.reset();
+			next({ name: "auth" });
+			return;
+		} else {
 			try {
 				const response = await request.get("http://localhost:3000/api/user");
-				const data = response.data.data;
-				profileStore.profile = data;
+				profileStore.profile = response.data?.data;
 			} catch (error) {
-				return next({ name: "auth" });
+				next({ name: "auth" });
+				return;
 			}
 		}
-
-	}
-
-	if (to.name === "auth" && !(!token || !tokenDate)) {
-		return next({ name: "home" });
 	}
 
 	next();
