@@ -4,14 +4,16 @@
 	"module": "index.ts",
 	"type": "module",
 	"scripts": {
-		"server": "bun run src/index.ts",
-		"server:watch": "bun --watch run src/index.ts",
-		"dev": "cd src/client && bunx vite build && cd ../../ && bun --watch src/index.ts",
-		"client:build": "cd src/client && bunx vite build && cd ../../",
-		"client:build:watch": "cd src/client && bunx vite build --watch && cd ../../",
+		"srv": "echo \"Server Running ...\" && bun run src/index.ts",
+		"srv:w": "echo \"Server Running & watching ...\" && bun --watch run src/index.ts",
+		"dev": "echo \"Developer Running ...\" && cd src/client && bunx vite build && cd ../../ && bun --watch src/index.ts",
+		"cnt:b": "echo \"Client Building ...\" && cd src/client && bunx vite build && cd ../../",
+		"cnt:b:w": "echo \"Client Building & watching ...\" && cd src/client && bunx vite build --watch && cd ../../",
 		"db:std": "bunx prisma studio --schema ./src/prisma/schema.prisma",
 		"db:push": "bunx prisma db push --schema ./src/prisma/schema.prisma",
-		"db:gen": "bunx prisma generate --schema ./src/prisma/schema.prisma"
+		"db:pull": "bunx prisma db pull --schema ./src/prisma/schema.prisma",
+		"db:gen": "bunx prisma generate --schema ./src/prisma/schema.prisma",
+		"db:mig": "bunx prisma migrate dev --schema ./src/prisma/schema.prisma"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
@@ -31,12 +33,16 @@
 		"@types/express": "^4.17.21",
 		"@types/joi": "^17.2.3",
 		"@types/jsonwebtoken": "^9.0.6",
+		"@types/node-cron": "^3.0.11",
+		"@types/nodemailer": "^6.4.15",
 		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.18.3",
 		"joi": "^17.12.2",
 		"jsonwebtoken": "^9.0.2",
+		"node-cron": "^3.0.3",
+		"nodemailer": "^6.9.13",
 		"prisma": "^5.13.0",
 		"vue": "^3.4.21"
 	}

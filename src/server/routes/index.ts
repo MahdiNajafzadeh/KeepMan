@@ -3,6 +3,8 @@ import authRoutes from "./api/auth.route";
 import userRoutes from "./api/user.route";
 import noteRoutes from "./api/note.route";
 import friendRoutes from "./api/friend.route";
+import reminderRoutes from "./api/reminder.route";
+import sharingRoutes from "./api/sharing.route";
 
 import clientRoutes from "./client.route";
 
@@ -20,8 +22,10 @@ router.use((req, res, next) => {
 
 router.use("/api", authRoutes);
 router.use("/api", userRoutes);
+router.use("/api", sharingRoutes);
 router.use("/api", noteRoutes);
 router.use("/api", friendRoutes);
+router.use("/api", reminderRoutes);
 router.use(clientRoutes);
 
 export default router;

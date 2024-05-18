@@ -27,7 +27,7 @@ async function friends_get(username: string): Promise<ModelRespose> {
 				],
 			},
 			select: {
-				friendId: true,
+				id: true,
 				sender: {
 					select: {
 						id: true,
@@ -69,7 +69,7 @@ async function friends_create(senderId: number, receiverId: number): Promise<Mod
 				receiverId: receiverId,
 			},
 			select: {
-				friendId: true,
+				id: true,
 				sender: {
 					select: {
 						id: true,
@@ -140,7 +140,7 @@ async function friends_update(
 
 		friendship = await prisma.friends.update({
 			where: {
-				friendId: friendship?.friendId,
+				id: friendship?.id,
 			},
 			data: {
 				status,
@@ -173,7 +173,7 @@ async function friends_delete(senderId: number, receiverId: number): Promise<Mod
 
 		friendship = await prisma.friends.delete({
 			where: {
-				friendId: friendship?.friendId,
+				id: friendship?.id,
 			},
 		});
 		return {

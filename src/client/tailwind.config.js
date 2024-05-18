@@ -35,7 +35,8 @@ export default {
       }
     },
     plugins: [
-      import('flowbite/plugin')
+      import('flowbite/plugin'),
+      import('@tailwindcss/typography'),
     ],
   }
 }

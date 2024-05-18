@@ -1,6 +1,7 @@
 /* import css */
 import "./assets/main.css";
 import "../node_modules/flowbite-vue/dist/index.css";
+import "../node_modules/highlight.js/styles/stackoverflow-dark.css"
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";

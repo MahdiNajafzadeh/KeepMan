@@ -31,11 +31,11 @@ async function note_get_all(userId: number): Promise<ModelRespose> {
 	}
 }
 
-async function note_get_one(userId: number, noteId: number): Promise<ModelRespose> {
+async function note_get_one(userId: number, id: number): Promise<ModelRespose> {
 	try {
 		const note = await prisma.notes.findMany({
 			where: {
-				noteId: noteId,
+				id: id,
 				userId: userId,
 			},
 		});
@@ -75,14 +75,14 @@ async function note_create(data: Prisma.NotesCreateInput): Promise<ModelRespose>
 
 async function note_update(
 	userId: number,
-	noteId: number,
+	id: number,
 	data: Prisma.NotesUpdateInput
 ): Promise<ModelRespose> {
 	try {
 		const note = await prisma.notes.update({
 			where: {
 				userId: userId,
-				noteId: noteId,
+				id: id,
 			},
 			data: data,
 		});
@@ -100,12 +100,12 @@ async function note_update(
 	}
 }
 
-async function note_delete(userId: number, noteId: number): Promise<ModelRespose> {
+async function note_delete(userId: number, id: number): Promise<ModelRespose> {
 	try {
 		const note = await prisma.notes.delete({
 			where: {
 				userId: userId,
-				noteId: noteId,
+				id: id,
 			},
 		});
 		return {

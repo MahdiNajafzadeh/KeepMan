@@ -38,12 +38,12 @@ const router = createRouter({
 			component: () => import("../views/NoteView.vue"),
 			meta: {
 				showNavBar: true,
-				showSearchBar: true
+				showSearchBar: false
 			}
 		},
 		{
 			path: "/note/edit/:id",
-			name: "note",
+			name: "note_edit",
 			component: () => import("../views/EditNoteView.vue"),
 			meta: {
 				showNavBar: true,
