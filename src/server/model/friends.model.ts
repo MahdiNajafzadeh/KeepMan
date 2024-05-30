@@ -1,14 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-interface ModelRespose {
-	success: boolean;
-	from: string;
-	exist?: boolean;
-	data?: any;
-	error?: any;
-}
-
 async function friends_get(username: string): Promise<ModelRespose> {
 	try {
 		const friends = await prisma.friends.findMany({
@@ -107,8 +99,10 @@ async function friends_exist(senderId: number, receiverId: number): Promise<Mode
 	try {
 		const friendship = await prisma.friends.findFirst({
 			where: {
-				senderId,
-				receiverId,
+				OR: [
+					{ senderId, receiverId },
+					{ senderId: receiverId, receiverId: senderId  }
+				],
 			},
 		});
 		return {

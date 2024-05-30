@@ -1,11 +1,9 @@
 import joi from "joi";
 
-const sharing_create = joi.object({
-	noteId: joi.number().required(),
-	sharedUserId: joi.array().items(joi.string()).required(),
-	expire: joi.number().required(),
+const sharing_upsert = joi.object({
+	usernames: joi.array().items(joi.string()).required(),
 });
 
 export default {
-	create: sharing_create,
+	upsert: sharing_upsert,
 };

@@ -1,13 +1,6 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-interface ModelRespose {
-	success: boolean;
-	from: string;
-	exist?: boolean;
-	data?: any;
-	error?: any;
-}
 
 async function note_get_all(userId: number): Promise<ModelRespose> {
 	try {

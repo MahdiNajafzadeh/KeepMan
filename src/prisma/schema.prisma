@@ -59,7 +59,6 @@ model Sharings {
   userId       Int
   sharedUserId Int
   noteId       Int
-  expire       DateTime
   user         Users    @relation("UserSentSharings", fields: [userId], references: [id])
   sharedUser   Users    @relation("UserReceivedSharings", fields: [sharedUserId], references: [id])
   note         Notes    @relation("NoteSharings", fields: [noteId], references: [id])

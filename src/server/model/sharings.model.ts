@@ -1,14 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-interface ModelRespose {
-	success: boolean;
-	from: string;
-	exist?: boolean;
-	data?: any;
-	error?: any;
-}
-
 async function sharing_get_all(userId: number): Promise<ModelRespose> {
 	try {
 		const sharings = await prisma.sharings.findMany({

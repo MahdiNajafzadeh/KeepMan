@@ -1,28 +1,6 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-interface ModelRespose {
-	success: boolean;
-	from: string;
-	exist?: boolean;
-	data?: any;
-	error?: any;
-}
-
-interface AuthValidateByUsernameBody {
-	username: string;
-	password: string;
-}
-
-interface AuthValidateByIdBody {
-	id: number;
-	password: string;
-}
-
-interface AuthChangePasswordBody {
-	id: number;
-	password: string;
-}
 
 async function user_exist_by_username(username: string): Promise<ModelRespose> {
 	try {
@@ -216,6 +194,7 @@ async function user_get_by_id(id: number): Promise<ModelRespose> {
 		return {
 			success: true,
 			from: "user.get.by.id",
+			exist: Boolean(user),
 			data: user,
 		};
 	} catch (error) {
@@ -244,6 +223,7 @@ async function user_get_by_username(username: string): Promise<ModelRespose> {
 		return {
 			success: true,
 			from: "user.get.by.username",
+			exist: Boolean(user),
 			data: user,
 		};
 	} catch (error) {
@@ -272,6 +252,7 @@ async function user_get_by_email(email: string): Promise<ModelRespose> {
 		return {
 			success: true,
 			from: "user.get.by.email",
+			exist: Boolean(user),
 			data: user,
 		};
 	} catch (error) {
@@ -301,6 +282,7 @@ async function user_update_by_id(id: number, data: Prisma.UsersUpdateInput): Pro
 		return {
 			success: true,
 			from: "user.get.by.id",
+			exist: Boolean(user),
 			data: user,
 		};
 	} catch (error) {
